@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: estudiante
+  namespace: thymeleaf
+spec:
+  selector:
+    matchLabels:
+      app: estudiante
+  replicas: 1
+  template:
+    metadata:
+      labels:
+         app: estudiante
+    spec:
+      imagePullSecrets:
+         - name: github-secret
+      containers:
+         - name: estudiante
+           image: localhost:5000/estudiante:latest
+           ports:
+              - containerPort: 8080
+           env:
+              - name: db_host
+                value: "190.146.2.119"
+              - name: db_port
+                value: "4407"
+              - name: db_basedatos
+                value: "estudiante"
+              - name: db_usuario
+                value: "estudiante"
+              - name: db_contrasena
+                value: "1234Pablo"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: estudiante
+  namespace: thymeleaf
+spec:
+  selector:
+    app: estudiante
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
